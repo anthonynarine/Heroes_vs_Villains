@@ -20,17 +20,20 @@ def supers_detail(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-@api_view(["GET", "PUT"])
+@api_view(["GET", "PUT", "DELETE"])
 def super_detail (request, pk):
         super = get_object_or_404(Super,pk=pk)
         if request.method == "GET":
             serializer = SupersSerializer(super);
             return Response(serializer.data)
         elif request.method == "PUT":
-            serializer = SupersSerializer(super,dat=request.data);
+            serializer = SupersSerializer(super,data=request.data);
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+        elif request.method == "DELETE":
+            super.delete
+            return Response(status=status.HTTP_204_NO_CONTENT)
             
 
         

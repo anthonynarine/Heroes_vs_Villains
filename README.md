@@ -312,6 +312,21 @@ UPDATE VIEW FUNCTION
         5. finally:
             return Response(serializer.data)
 
+DELETE VIES FUNCTIONALITY
+        Delete requests do not need andy information in they body all we need is a pk. 
+        B/C only a primary key is needed functionality can be added to the details 
+        function. 
+
+        @api_view(["GET", "PUT", "DELETE"])
+        def super_detail (request, pk):
+        super = get_object_or_404(Super,pk=pk)
+        
+            elif request.method == "DELETE":
+            super.delete
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
 
 
 
