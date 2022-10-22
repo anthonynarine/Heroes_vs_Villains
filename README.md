@@ -91,7 +91,7 @@ Register APP
     2. from .models import <app_name>
 
     3. reigister model
-        admin.site.register(Library)
+        admin.site.register(<app_name>)
 
 
 Serialize APP  
@@ -103,9 +103,9 @@ Serialize APP
     from rest_framework import serializers
 
 2. import app. 
-    from .models import Car
+    from .models import <app_name>
 
-3. create class.
+3. in serializers file - create class.
  ~ the class is always named after the model followed by Serializer 
 
     class CarSerializer(serializers.ModelSerializer): 
