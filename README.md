@@ -189,7 +189,7 @@ Linking Apps with Foreigh Key
             the fields list
 
 
-Setting up a Get All Request & Response
+GET ALL REQUEST VIEW FUNCTION
    
     1 URLs (local App urls)
     
@@ -226,7 +226,7 @@ Setting up a Get All Request & Response
             return Response(serializer.data)
 
 
-Adding POST Request 
+POST REQUEST VIEW FUNCTION
     (Post Request is handled under the above GET All functiion logic)
     
     1. update @apo_veiw list 
@@ -242,7 +242,7 @@ Adding POST Request
                 queryset = Super.objects.all()
                 serializer = SupersSerializer(queryset, many=True)
                 return Response(serializer.data)
-                
+
             elif request.method == "POST":
                 serializer = SupersSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
@@ -253,11 +253,74 @@ Adding POST Request
                 (from rest_framework import status)
                 This will handle incorrect user request
 
-GET BY ID 
-    ~ a get by id request function logic can manage both
-      a GET by id and PUT functionality ~
+GET BY ID VIEW FUNCTION
 
-      GET BY ID first (break problems down)
+    Django has added a shortcut for developers that eliminates the try and 
+    except method of error handling with the get_object_or_404.
+    (from django.shortcuts import get_object_or_404)
+
+    all we need to do is set our model = get_object_or_404(<model_name>, pk=pk)
+    pass in the model so the function knows to query that table and the pk=pk so it 
+    filters the pk
+
+    @api_view(["GET"])
+    def super_detail (request, pk):
+        super = get_object_or_404(Super,pk=pk)
+        serializer = SupersSerializer(super);
+        return Response(serializer.data)
+
+
+
+UPDATE VIEW FUNCTION
+    ~ BECAUSE A PK IS REQUIRED TO BE PASSED IN WE CAN ADD LOGIC
+      TO OUR GET BY ID VIEW FUNCTION TO UPDATE AN OBJECT ~ 
+
+      def super_detail (request, pk):
+        super = get_object_or_404(Super,pk=pk)
+        if request.method == "GET":
+            serializer = SupersSerializer(super);
+            return Response(serializer.data)
+        elif request.method == "PUT":
+            serializer = SupersSerializer(super,dat=request.data);
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+
+        The if satement will handle the GET by ID request.
+        The elif statment will handle the UPDATE by ID request. 
+
+        since both statements use: super = get_object_or_404(Super,pk=pk)
+        we move it to the top and outside of the if/elif block making it 
+        accessible to both statements. 
+
+        1. to update we need to get the original object fromt the DB
+                this is handeled by:  super = get_object_or_404(Super,pk=pk)
+                this will get the original object from the database or send a 404 error
+
+        2. we create a serializer set it = to SuperSerializer
+           to update using serializer we pass in the current version of the object "super"
+           then data=request.dat. this takes a look at the incoming JSON dats compare it 
+           to the current version of the object (as mention as the 1st parameter) and update
+           it in the db
+
+        3. then serializer.is_valid(raise_exception=True)
+           if the serializer is not valid an exception will be raised. 
+
+        4. if is gets pass serializer.is_valid
+           we save >> serializer.save()
+
+        5. finally:
+            return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
 
 
 
