@@ -136,6 +136,128 @@ Make Migrations, Migrate, and push to github
 
 
 Linking Apps with Foreigh Key
+    1. After app creation Register app with app admin file
+
+        from django.contrib import admin
+        from .models import Super
+
+        # Register your models here.
+        admin.site.register(Super)
+
+    2. app.py will automatically create app.config files
+       
+       from django.apps import AppConfig
+
+        class SupersConfig(AppConfig):
+            default_auto_field = "django.db.models.BigAutoField"
+             name = "supers"
+
+    3. Create models 
+
+        from django.db import models               
+        from super_types.models import SuperType
+
+        # Create your models here.
+        class Super(models.Model):
+            name = models.CharField(max_length=200)
+            alter_ego = models.CharField(max_length=200)
+            primary_ability = models.CharField(max_length=200)
+            secondary_ability = models.CharField(max_length=200)
+            catchphrase = models.CharField(max_length=200)
+            super_type = models.ForeignKey(SuperType, on_delete=models.CASCADE)
+
+            * when using a ForeignKey Django will ask for a null value
+              in order to makemigrations. Set null=True for migrations
+              then remove value after migrations
+
+              after models are complete and linked run manage.py
+              makemigrations and migrate. 
+
+    4. Serializers
+
+        from rest_framework import serializers
+        from .models import Super
+
+
+        class SupersSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Super
+            fields =  ["super_type","name", "alter_ego", "primary_ability", "secondary_ability",]
+            depth = 1    # will next 2nd created app fields
+        
+            * in fields list the name of the app NOT the field is added to 
+            the fields list
+
+
+Setting up a Get All Request & Response
+   
+    1 URLs (local App urls)
+    
+        from django.urls import path
+        from . import views
+
+        urlpatterns = [
+            path("", views.supers_detail ), 
+    ]
+
+    2. URLs (project urls)
+         from django.contrib import admin
+         from django.urls import path, include
+
+        urlpatterns = [
+            path("admin/", admin.site.urls),
+            path("api/supers/",include("supers.urls")),
+    ]
+
+    2. View Get All request
+    
+        from django.shortcuts import render
+        from rest_framework.decorators import api_view
+        from rest_framework.response import Response
+        from .serializers import SupersSerializer
+        from .models import Super
+
+        # Create your views here.
+
+        @api_view(["GET"])
+        def supers_detail(request):
+            queryset = Super.objects.all()
+            serializer = SupersSerializer(queryset, many=True)
+            return Response(serializer.data)
+
+
+Adding POST Request 
+    (Post Request is handled under the above GET All functiion logic)
+    
+    1. update @apo_veiw list 
+        @api_view(["GET","POST"])  #POST ADDED to list
+
+
+    2. If/elif statement handles GET and POST option
+
+        @api_view(["GET", "POST"])
+        def supers_detail(request):
+
+            if request.method == "GET":  
+                queryset = Super.objects.all()
+                serializer = SupersSerializer(queryset, many=True)
+                return Response(serializer.data)
+                
+            elif request.method == "POST":
+                serializer = SupersSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            # status must be added from rest_framework
+                (from rest_framework import status)
+                This will handle incorrect user request
+
+GET BY ID 
+    ~ a get by id request function logic can manage both
+      a GET by id and PUT functionality ~
+
+      GET BY ID first (break problems down)
 
 
 
