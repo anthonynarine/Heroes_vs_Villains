@@ -135,8 +135,8 @@ Make Migrations, Migrate, and push to github
     3. push to github
 
 
-Linking apps.
-    
+Linking Apps with Foreigh Key
+
 
 
 
