@@ -189,6 +189,33 @@ Linking Apps with Foreigh Key
             the fields list
 
 
+~ Views dictate WHAT information is being shown to the client ~
+~ URLs dictate WHERE that information is shown on the website ~
+~ Think of each VIEW and URL pairing is a particular web page on a website ~ 
+              ~Views need to be routed throuogh a URL ~
+
+~ We connect the Views through URL in the app level all the way to the URL in the 
+  project level throug the use of path() and include() Django functions and a list
+  of view routes ~
+
+  ~ View connect to URL with the path() function call
+     1. The 1st argument the path function call will take is the route.
+    Which is string code that contains the URL pattern ~
+
+    ~ Django will scan the relevant urlpatterns list until it finds a matching 
+      string route (e.g. "app/") 
+
+      2. The 2nd arguement path() function call will take 
+         is the view. once the matching route is found, the view
+         argument connects to a function or view. 
+
+     3. optional arguments 
+            1. one allows us to pass in keyword agruments as dicts. to the view
+            2  one allows us to name a URL in order to refrence it elswhere in Django ~
+    
+    
+
+
 GET ALL REQUEST VIEW FUNCTION
    
     1 URLs (local App urls)
@@ -312,7 +339,7 @@ UPDATE VIEW FUNCTION
         5. finally:
             return Response(serializer.data)
 
-DELETE VIES FUNCTIONALITY
+DELETE VIEW FUNCTIONALITY
         Delete requests do not need andy information in they body all we need is a pk. 
         B/C only a primary key is needed functionality can be added to the details 
         function. 
@@ -320,10 +347,30 @@ DELETE VIES FUNCTIONALITY
         @api_view(["GET", "PUT", "DELETE"])
         def super_detail (request, pk):
         super = get_object_or_404(Super,pk=pk)
-        
+
             elif request.method == "DELETE":
             super.delete
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+Query Parameters:
+
+    Query parameters come after a the base URL   
+        in this example - http://127.0.0.1:8000/api/cars  
+
+        1. the 1st query parameter must come after a question mark(?)
+
+        2. query parameters are added as key: value pairs
+            for this example key is, dealership, the value is, Julia's Sports Cars,
+            which is a dealership name in our db. 
+
+            http://127.0.0.1:8000/api/cars?dealership=Julia's Sports Cars   
+        
+        3 any query parameter after the first is seperated by the and operator (&)
+          sort will be the key, year will be the value. 
+
+          http://127.0.0.1:8000/api/cars?dealership=Julia's Sports Cars&sort=year  
+
 
 
 
