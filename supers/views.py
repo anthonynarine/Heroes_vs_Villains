@@ -15,10 +15,10 @@ from django.shortcuts import get_object_or_404
 def supers_detail(request):
     if request.method == "GET":  
         #query to get super by type
-        super_type = request.query_params.get("type") 
+        types = request.query_params.get("super_type") 
         queryset = Super.objects.all()
-        if super_type:
-            supers = supers.filter(super_type__type=super_type)
+        if types:
+            supers = supers.filter(super_type__type=types)
         serializer = SupersSerializer(queryset, many=True)
         return Response(serializer.data)
     elif request.method == "POST":
@@ -43,6 +43,24 @@ def super_pk_needed (request, pk):
         elif request.method == "DELETE":
             super.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        
+@api_view(["GET"])       
+def types_and_supers(request):
+    
+    supers = Super.objects.all()
+    types = SuperType.objects.all()
+    
+    super_serializer = SupersSerializer(supers, many=True)
+    type_serializer = SuperTypeSerializer(types, many=True)
+    
+    cumston_response_dict = {
+        "supers": super_serializer.data,
+        "types": type_serializer.data
+    }
+    return Response(cumston_response_dict)
+        
+
+
         
 
         
