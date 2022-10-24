@@ -355,6 +355,18 @@ DELETE VIEW FUNCTIONALITY
 
 Query Parameters:
 
+    We can use Django ORM lookup functionality on foreign key related objects to query based off nested foreign key table columns! By using two underlines after the foreign key relationship property, we can specify a property to filter by that exists on that nested foreign key relationship.
+
+    supers = supers.filter(super_type__type="Hero")
+
+        we are querying the Super tabel that has the fk to the 
+        SuperType table. within the filter function we pass in the
+        super_type property.(Super model's fk property) followed by
+        2x underscores(__) and finally the property on the foreign key
+        model we would like to use in our filter. 
+
+
+
     Query parameters come after a the base URL   
         in this example - http://127.0.0.1:8000/api/cars  
 
@@ -370,6 +382,9 @@ Query Parameters:
           sort will be the key, year will be the value. 
 
           http://127.0.0.1:8000/api/cars?dealership=Julia's Sports Cars&sort=year  
+
+
+
 
 
 
